@@ -23,7 +23,7 @@ pub fn Navbar(
         match child {
             TabView::Tab { name, children } => {
                 tabs_content.push((name, children));
-                button_bar.push(view! {<TabButton tab_name=name active_tab=active_tab />})
+                button_bar.push(view! {<TabButton tab_name=name active_tab=active_tab />});
             }
             TabView::Button { children } => button_bar.push(children().into_view()),
         }

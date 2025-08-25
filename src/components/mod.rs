@@ -1,3 +1,5 @@
+#![allow(clippy::needless_pass_by_value)] // leptos has broken lifetime parsing
+
 mod analysis;
 mod app;
 mod copy_to_clipboard;

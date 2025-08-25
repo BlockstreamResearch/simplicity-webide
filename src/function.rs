@@ -39,10 +39,10 @@ impl fmt::Display for ErrorKind {
                     FallibleCallName::Panic => writeln!(f, "Explicit panic")?,
                     FallibleCallName::Jet => writeln!(f, "Jet failed")?,
                     FallibleCallName::UnwrapLeft(val) => {
-                        writeln!(f, "Called `unwrap_left()` on a `Right` value: {val}")?
+                        writeln!(f, "Called `unwrap_left()` on a `Right` value: {val}")?;
                     }
                     FallibleCallName::UnwrapRight(val) => {
-                        writeln!(f, "Called `unwrap_right()` on a `Left` value: {val}")?
+                        writeln!(f, "Called `unwrap_right()` on a `Left` value: {val}")?;
                     }
                     FallibleCallName::Unwrap => writeln!(f, "Called `unwrap()` on a `None` value")?,
                 }
@@ -80,7 +80,7 @@ pub struct Runner {
 }
 
 impl Runner {
-    pub fn for_program(program: SatisfiedProgram) -> Self {
+    pub fn for_program(program: &SatisfiedProgram) -> Self {
         Self {
             tasks: vec![Task::Execute(program.redeem().clone())],
             input: vec![Value::unit()],
@@ -303,7 +303,7 @@ mod tests {
             println!("{name}");
             let example = examples::get(name).unwrap();
             let (satisfied, tx_env) = satisfied_and_tx_env(example, &signing_keys, &hashed_data);
-            let mut runner = Runner::for_program(satisfied);
+            let mut runner = Runner::for_program(&satisfied);
             if let Err(error) = runner.run(&tx_env) {
                 println!("sighash all = {}", tx_env.c_tx_env().sighash_all());
                 for debug_line in runner.debug_output() {
@@ -326,7 +326,7 @@ mod tests {
             let (satisfied, tx_env) = satisfied_and_tx_env(example, &signing_keys, &hashed_data);
             let rust_simplicity_result = simplicity::BitMachine::for_program(satisfied.redeem())
                 .exec(satisfied.redeem(), &tx_env);
-            let webide_result = Runner::for_program(satisfied).run(&tx_env);
+            let webide_result = Runner::for_program(&satisfied).run(&tx_env);
             match (rust_simplicity_result, webide_result) {
                 (Ok(..), Err(error)) => {
                     panic!("rust-simplicity accepted but web IDE rejected: {error}")

@@ -296,21 +296,20 @@ fn SelectSignedData() -> impl IntoView {
             thirty_two_bytes_is_insane.set(true);
         }
     };
-    let update_hash_preimage_bytes = move |event: ev::Event| match <Vec<u8>>::from_hex(
-        event_target_value(&event)
-            .as_str()
-            .trim()
-            .trim_start_matches("0x"),
-    ) {
-        Ok(bytes) => {
+    let update_hash_preimage_bytes = move |event: ev::Event| {
+        if let Ok(bytes) = <Vec<u8>>::from_hex(
+            event_target_value(&event)
+                .as_str()
+                .trim()
+                .trim_start_matches("0x"),
+        ) {
             signed_data.hash_preimage_bytes.set(bytes);
             hash_preimage_bytes_text_ref
                 .get()
                 .expect("<input> should be mounted")
                 .set_custom_validity("");
             hash_preimage_bytes_is_insane.set(false);
-        }
-        Err(..) => {
+        } else {
             sighash_all_radio_ref
                 .get()
                 .expect("<input> should be mounted")

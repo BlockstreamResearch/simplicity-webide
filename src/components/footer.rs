@@ -1,4 +1,4 @@
-use leptos::{component, create_signal, view, IntoView, SignalGet, SignalSet, *};
+use leptos::{component, create_signal, view, wasm_bindgen, IntoView, SignalGet, SignalSet};
 use wasm_bindgen::JsCast;
 
 #[cfg(target_arch = "wasm32")]
@@ -69,7 +69,7 @@ fn NewsletterForm() -> impl IntoView {
 
         spawn_local(async move {
             match subscribe_to_newsletter(email_value).await {
-                Ok(_) => {
+                Ok(()) => {
                     set_status.set(FormStatus::Success);
                     set_message
                         .set("Thank you for subscribing! We'll keep you updated.".to_string());

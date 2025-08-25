@@ -84,10 +84,10 @@ pub fn execute_jet_with_env<J: Jet>(
     let c_env = J::c_jet_env(env);
     let success = jet_fn(&mut output_write_frame, input_read_frame, c_env);
 
-    if !success {
-        Err(JetFailed)
-    } else {
+    if success {
         Ok(value_from_frame(&output_type, &mut output_buffer))
+    } else {
+        Err(JetFailed)
     }
 }
 

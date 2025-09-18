@@ -58,7 +58,7 @@ pub fn Navigation() -> impl IntoView {
                                 <div class="navigation-dropdown-title">"Whitepaper"</div>
                                 <div class="navigation-dropdown-description">"The original Simplicity whitepaper, detailing the language."</div>
                             </a>
-                            <a href="https://docs.rs/simplicityhl-as-rust" target="_blank" rel="noopener noreferrer" class="navigation-dropdown-item">
+                            <a href="https://docs.simplicity-lang.org/documentation/jets-explained/" target="_blank" rel="noopener noreferrer" class="navigation-dropdown-item">
                                 <div class="navigation-dropdown-title">"Jets Documentation"</div>
                                 <div class="navigation-dropdown-description">"Technical reference detailing each jet's functionality and use."</div>
                             </a>
@@ -140,7 +140,7 @@ pub fn Navigation() -> impl IntoView {
                         class:active=move || docs_open.get()
                     >
                         <a href="https://blockstream.com/simplicity.pdf" target="_blank" rel="noopener noreferrer" class="navigation-mobile-dropdown-item" on:click=close_mobile_menu>"Whitepaper"</a>
-                        <a href="https://docs.rs/simplicityhl-as-rust" target="_blank" rel="noopener noreferrer" class="navigation-mobile-dropdown-item" on:click=close_mobile_menu>"Jets Documentation"</a>
+                        <a href="https://docs.simplicity-lang.org/documentation/jets-explained/" target="_blank" rel="noopener noreferrer" class="navigation-mobile-dropdown-item" on:click=close_mobile_menu>"Jets Documentation"</a>
                         <a href="https://docs.simplicity-lang.org/" target="_blank" rel="noopener noreferrer" class="navigation-mobile-dropdown-item" on:click=close_mobile_menu>"SimplicityHL"</a>
                         <a href="https://github.com/BlockstreamResearch/SimplicityHL/tree/master/examples" target="_blank" rel="noopener noreferrer" class="navigation-mobile-dropdown-item" on:click=close_mobile_menu>"Contract Examples"</a>
                     </div>

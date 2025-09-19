@@ -1066,11 +1066,11 @@ p {
 
 .main-content {
   padding: 0 37px;
-  margin: 220px auto 75px;
+  margin: 40px auto 75px;
 }
 @media (max-width: 768px) {
   .main-content {
-    margin-top: 75px;
+    margin-top: 30px;
     padding: 0 10px;
   }
 }

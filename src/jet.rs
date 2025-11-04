@@ -14,9 +14,11 @@ pub fn execute_jet_with_env<J: Jet>(
     input: &Value,
     env: &J::Environment,
 ) -> Result<Value, JetFailed> {
-    let prog = Arc::<ConstructNode<J>>::jet(&Context::new(), *jet)
-        .finalize_unpruned()
-        .expect("a single jet definitely typechecks");
+    let prog = Context::with_context(|ctx| {
+        Arc::<ConstructNode<J>>::jet(&ctx, *jet)
+            .finalize_unpruned()
+            .expect("a single jet definitely typechecks")
+    });
 
     let mut mac = BitMachine::for_program(&prog).expect("a single jet is within limits");
 

@@ -66,7 +66,13 @@ impl Program {
             self.cached_text.set(text.clone());
             let compiled = simplicityhl::Arguments::parse_from_str(text)
                 .map_err(|error| error.to_string())
-                .and_then(|args| CompiledProgram::new(text.as_str(), args));
+                .and_then(|args| {
+                    CompiledProgram::new(
+                        text.as_str(),
+                        args,
+                        false, /* include debug symbols */
+                    )
+                });
             let cmr = compiled
                 .as_ref()
                 .map(|x| x.commit().cmr())

@@ -105,25 +105,25 @@ impl Runner {
                         Inner::Unit => self.output.push(Value::unit()),
                         Inner::InjL(t) => {
                             let ty_r = expression.arrow().target.as_sum().unwrap().1;
-                            self.tasks.push(Task::MakeLeft(Arc::new(ty_r.clone())));
+                            self.tasks.push(Task::MakeLeft(Arc::clone(ty_r)));
                             self.tasks.push(Task::Execute(Arc::clone(t)));
                             self.input.push(input);
                         }
                         Inner::InjR(t) => {
                             let ty_l = expression.arrow().target.as_sum().unwrap().0;
-                            self.tasks.push(Task::MakeRight(Arc::new(ty_l.clone())));
+                            self.tasks.push(Task::MakeRight(Arc::clone(ty_l)));
                             self.tasks.push(Task::Execute(Arc::clone(t)));
                             self.input.push(input);
                         }
                         Inner::Take(t) => {
                             let (a, _) = input.as_product().ok_or(ErrorKind::WrongType)?;
                             self.tasks.push(Task::Execute(Arc::clone(t)));
-                            self.input.push(a.shallow_clone());
+                            self.input.push(a.to_value());
                         }
                         Inner::Drop(t) => {
                             let (_, b) = input.as_product().ok_or(ErrorKind::WrongType)?;
                             self.tasks.push(Task::Execute(Arc::clone(t)));
-                            self.input.push(b.shallow_clone());
+                            self.input.push(b.to_value());
                         }
                         Inner::Comp(s, t) => {
                             self.tasks.push(Task::Execute(Arc::clone(t)));
@@ -144,9 +144,7 @@ impl Runner {
                             if let Inner::AssertL(_, cmr) = expression.inner() {
                                 if let Some(tracked_call) = self.debug_symbols.get(cmr) {
                                     match tracked_call.map_value(
-                                        &simplicityhl::value::StructuralValue::from(
-                                            c.shallow_clone(),
-                                        ),
+                                        &simplicityhl::value::StructuralValue::from(c.to_value()),
                                     ) {
                                         Some(Either::Left(fallible_call)) => {
                                             let replaced = self
@@ -172,10 +170,7 @@ impl Runner {
                                 match expression.inner() {
                                     Inner::Case(s, _) | Inner::AssertL(s, _) => {
                                         self.tasks.push(Task::Execute(Arc::clone(s)));
-                                        self.input.push(Value::product(
-                                            a.shallow_clone(),
-                                            c.shallow_clone(),
-                                        ));
+                                        self.input.push(Value::product(a.to_value(), c.to_value()));
                                     }
                                     Inner::AssertR(_, _) => {
                                         return Err(self.error(ErrorKind::AssertionFailed))
@@ -186,10 +181,7 @@ impl Runner {
                                 match expression.inner() {
                                     Inner::Case(_, t) | Inner::AssertR(_, t) => {
                                         self.tasks.push(Task::Execute(Arc::clone(t)));
-                                        self.input.push(Value::product(
-                                            b.shallow_clone(),
-                                            c.shallow_clone(),
-                                        ));
+                                        self.input.push(Value::product(b.to_value(), c.to_value()));
                                     }
                                     Inner::AssertL(_, _) => {
                                         return Err(self.error(ErrorKind::AssertionFailed))
@@ -224,8 +216,8 @@ impl Runner {
                 Task::MoveLeftDisconnectOutput => {
                     let prod_b_c = self.output.pop().unwrap();
                     let (b, c) = prod_b_c.as_product().unwrap();
-                    self.output.push(b.shallow_clone());
-                    self.input.push(c.shallow_clone());
+                    self.output.push(b.to_value());
+                    self.input.push(c.to_value());
                 }
                 Task::MakeLeft(ty_r) => {
                     let val_l = self.output.pop().unwrap();
@@ -276,8 +268,12 @@ mod tests {
         hashed_data: &HashedData,
     ) -> (SatisfiedProgram, ElementsEnv<Arc<elements::Transaction>>) {
         let arguments = example.arguments(&signing_keys.public_keys, &hashed_data.hashes);
-        let compiled = CompiledProgram::new(example.template_text(), arguments)
-            .expect("example should compile");
+        let compiled = CompiledProgram::new(
+            example.template_text(),
+            arguments,
+            false, /* include debug symbols */
+        )
+        .expect("example should compile");
         let tx_env = example.params().tx_env(compiled.commit().cmr());
         let sighash_all =
             secp256k1::Message::from_digest(tx_env.c_tx_env().sighash_all().to_byte_array());
@@ -325,6 +321,7 @@ mod tests {
             let example = examples::get(name).unwrap();
             let (satisfied, tx_env) = satisfied_and_tx_env(example, &signing_keys, &hashed_data);
             let rust_simplicity_result = simplicity::BitMachine::for_program(satisfied.redeem())
+                .expect("program within limits")
                 .exec(satisfied.redeem(), &tx_env);
             let webide_result = Runner::for_program(&satisfied).run(&tx_env);
             match (rust_simplicity_result, webide_result) {

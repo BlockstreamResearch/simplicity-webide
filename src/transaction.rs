@@ -91,7 +91,7 @@ impl TxParams {
 
     pub fn transaction(&self, pruned: &RedeemNode<Elements>) -> elements::Transaction {
         let mut tx = self.unsatisfied_transaction();
-        let (simplicity_program_bytes, simplicity_witness_bytes) = pruned.encode_to_vec();
+        let (simplicity_program_bytes, simplicity_witness_bytes) = pruned.to_vec_with_witness();
         let cmr = pruned.cmr();
         tx.input[0].witness = elements::TxInWitness {
             amount_rangeproof: None,

@@ -28,7 +28,7 @@ pub fn App() -> impl IntoView {
     provide_context(ActiveRunTab::default());
 
     if program.is_empty() {
-        select_example(examples::get("✍️️ P2PK").expect("P2PK example should exist"))
+        select_example(examples::get("✍️️ P2PK").expect("P2PK example should exist"));
     }
 
     view! {

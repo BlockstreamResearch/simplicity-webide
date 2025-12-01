@@ -55,11 +55,10 @@ impl TxParams {
                     asset: confidential::Asset::Explicit(util::liquid_testnet_bitcoin_asset()),
                     value: confidential::Value::Explicit(self.value_in.saturating_sub(self.fee)),
                     nonce: confidential::Nonce::Null,
-                    script_pubkey: self
-                        .recipient_address
-                        .as_ref()
-                        .map(elements::Address::script_pubkey)
-                        .unwrap_or_else(util::liquid_testnet_faucet_script_pubkey),
+                    script_pubkey: self.recipient_address.as_ref().map_or_else(
+                        util::liquid_testnet_faucet_script_pubkey,
+                        elements::Address::script_pubkey,
+                    ),
                     witness: elements::TxOutWitness::empty(),
                 },
                 elements::TxOut::new_fee(self.fee, util::liquid_testnet_bitcoin_asset()),
@@ -92,7 +91,7 @@ impl TxParams {
 
     pub fn transaction(&self, pruned: &RedeemNode<Elements>) -> elements::Transaction {
         let mut tx = self.unsatisfied_transaction();
-        let (simplicity_program_bytes, simplicity_witness_bytes) = pruned.encode_to_vec();
+        let (simplicity_program_bytes, simplicity_witness_bytes) = pruned.to_vec_with_witness();
         let cmr = pruned.cmr();
         tx.input[0].witness = elements::TxInWitness {
             amount_rangeproof: None,

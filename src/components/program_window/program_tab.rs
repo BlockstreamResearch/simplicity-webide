@@ -32,9 +32,9 @@ impl Program {
     pub fn new(text: String) -> Self {
         let program = Self {
             text: create_rw_signal(text),
-            cached_text: create_rw_signal("".to_string()),
-            lazy_cmr: create_rw_signal(Err("".to_string())),
-            lazy_satisfied: create_rw_signal(Err("".to_string())),
+            cached_text: create_rw_signal(String::new()),
+            lazy_cmr: create_rw_signal(Err(String::new())),
+            lazy_satisfied: create_rw_signal(Err(String::new())),
         };
         program.update_on_read();
         program
@@ -66,7 +66,13 @@ impl Program {
             self.cached_text.set(text.clone());
             let compiled = simplicityhl::Arguments::parse_from_str(text)
                 .map_err(|error| error.to_string())
-                .and_then(|args| CompiledProgram::new(text.as_str(), args));
+                .and_then(|args| {
+                    CompiledProgram::new(
+                        text.as_str(),
+                        args,
+                        false, /* include debug symbols */
+                    )
+                });
             let cmr = compiled
                 .as_ref()
                 .map(|x| x.commit().cmr())
@@ -109,9 +115,9 @@ impl Runtime {
         Self {
             program,
             env,
-            run_succeeded: Default::default(),
-            debug_output: Default::default(),
-            error_output: Default::default(),
+            run_succeeded: RwSignal::default(),
+            debug_output: RwSignal::default(),
+            error_output: RwSignal::default(),
         }
     }
 
@@ -140,7 +146,7 @@ impl Runtime {
                 return;
             }
         };
-        let mut runner = Runner::for_program(satisfied_program);
+        let mut runner = Runner::for_program(&satisfied_program);
         let success = self.env.with(|env| match runner.run(env) {
             Ok(..) => {
                 self.error_output.update(String::clear);

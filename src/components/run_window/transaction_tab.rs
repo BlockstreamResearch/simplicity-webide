@@ -35,13 +35,13 @@ impl TxEnv {
 #[component]
 pub fn TransactionTab() -> impl IntoView {
     let tx_env = use_context::<TxEnv>().expect("transaction environment should exist in context");
-    let txid_parse_error = create_rw_signal("".to_string());
-    let vout_parse_error = create_rw_signal("".to_string());
-    let value_in_parse_error = create_rw_signal("".to_string());
-    let recipient_address_parse_error = create_rw_signal("".to_string());
-    let fee_parse_error = create_rw_signal("".to_string());
-    let lock_time_parse_error = create_rw_signal("".to_string());
-    let sequence_parse_error = create_rw_signal("".to_string());
+    let txid_parse_error = create_rw_signal(String::new());
+    let vout_parse_error = create_rw_signal(String::new());
+    let value_in_parse_error = create_rw_signal(String::new());
+    let recipient_address_parse_error = create_rw_signal(String::new());
+    let fee_parse_error = create_rw_signal(String::new());
+    let lock_time_parse_error = create_rw_signal(String::new());
+    let sequence_parse_error = create_rw_signal(String::new());
 
     let update_txid = move |e: ev::Event| match elements::Txid::from_str(&event_target_value(&e)) {
         Ok(txid) => {

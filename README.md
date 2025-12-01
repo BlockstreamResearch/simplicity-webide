@@ -6,6 +6,8 @@ SimplicityHL looks and feels like [Rust](https://www.rust-lang.org). Just how Ru
 
 [A live demo is running](https://ide.simplicity-lang.org).
 
+This project should build on Rust **1.78.0**.
+
 ## Develop the project
 
 ### Using Docker

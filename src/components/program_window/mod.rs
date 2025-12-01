@@ -43,10 +43,10 @@ pub fn ProgramWindow() -> impl IntoView {
                 class:hamburger-active=mobile_open
                 on:click=move |_| set_mobile_open.set(!mobile_open.get())
             >
-                {move || if !mobile_open.get() {
-                    view! { <i class="fa-solid fa-bars"></i>}
-                } else {
+                {move || if mobile_open.get() {
                     view! { <i class="fa-solid fa-xmark"></i> }
+                } else {
+                    view! { <i class="fa-solid fa-bars"></i>}
                 }}
             </div>
         </Toolbar>

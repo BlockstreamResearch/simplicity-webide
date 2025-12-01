@@ -23,5 +23,5 @@ fn main() {
                 </main>
             </Router>
         }
-    })
+    });
 }

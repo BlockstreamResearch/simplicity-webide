@@ -10,12 +10,12 @@ pub fn ExecutionTab() -> impl IntoView {
     let success_string = move || {
         runtime.error_output.with(|error| match error.is_empty() {
             true => format!("{}: Success.", get_local_datetime()),
-            false => "".to_string(),
+            false => String::new(),
         })
     };
     let failure_string = move || {
         runtime.error_output.with(|error| match error.is_empty() {
-            true => "".to_string(),
+            true => String::new(),
             false => format!("{}:\n{error}", get_local_datetime()),
         })
     };

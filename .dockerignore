@@ -1,0 +1,21 @@
+# Dockerfile itself not needed inside build
+Dockerfile
+
+# Docs & licenses
+LICENSE
+README.md
+doc/
+
+# Nix and CI
+deploy.nix
+flake.nix
+flake.lock
+
+# Linter config
+clippy.toml
+
+# Optional: scripts not needed for build
+fix-links.sh
+
+# Optional: task runner
+justfile

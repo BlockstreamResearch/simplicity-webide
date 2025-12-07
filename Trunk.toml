@@ -1,0 +1,8 @@
+[build]
+# target = "wasm32-unknown-unknown"
+release = true
+dist = "dist"
+public-url = "/"
+
+[watch]
+ignore = ["node_modules"]

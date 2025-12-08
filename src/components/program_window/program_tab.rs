@@ -2,14 +2,15 @@ use std::sync::Arc;
 
 use itertools::Itertools;
 use leptos::{
-    component, create_node_ref, create_rw_signal, ev, event_target_value, html, spawn_local,
-    use_context, view, IntoView, RwSignal, Signal, SignalGetUntracked, SignalSet, SignalUpdate,
-    SignalWith, SignalWithUntracked,
+    component, create_effect, create_node_ref, create_rw_signal, ev, event_target_value, html,
+    spawn_local, use_context, view, IntoView, RwSignal, Signal, SignalGet, SignalGetUntracked,
+    SignalSet, SignalUpdate, SignalWith, SignalWithUntracked,
 };
 use simplicityhl::parse::ParseFromStr;
 use simplicityhl::simplicity::jet::elements::ElementsEnv;
 use simplicityhl::{elements, simplicity};
 use simplicityhl::{CompiledProgram, SatisfiedProgram, WitnessValues};
+use wasm_bindgen::JsCast;
 
 use crate::components::copy_to_clipboard::CopyToClipboard;
 use crate::function::Runner;
@@ -175,6 +176,72 @@ pub fn ProgramTab() -> impl IntoView {
     let update_program_text = move |event: ev::Event| {
         program.text.set(event_target_value(&event));
     };
+
+    // Initialize CodeMirror when textarea is mounted (optional enhancement)
+    create_effect(move |_prev_value| {
+        if let Some(textarea) = textarea_ref.get() {
+            // Only initialize once
+            spawn_local(async move {
+                // Small delay to ensure CodeMirror is loaded
+                gloo_timers::future::TimeoutFuture::new(50).await;
+
+                if let Some(window) = web_sys::window() {
+                    // Check if CodeMirror and our init function exist
+                    let has_codemirror =
+                        js_sys::Reflect::has(&window, &"CodeMirror".into()).unwrap_or(false);
+
+                    if has_codemirror {
+                        if let Ok(simplicity_editor) =
+                            js_sys::Reflect::get(&window, &"SimplicityEditor".into())
+                        {
+                            // Call SimplicityEditor.init() if it exists
+                            if let Ok(init_fn) =
+                                js_sys::Reflect::get(&simplicity_editor, &"init".into())
+                            {
+                                if let Some(init_fn) = init_fn.dyn_ref::<js_sys::Function>() {
+                                    let textarea_id = "program-input";
+                                    let initial_value = textarea.value();
+                                    let _ = init_fn.call2(
+                                        &simplicity_editor,
+                                        &textarea_id.into(),
+                                        &initial_value.into(),
+                                    );
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+    });
+
+    // Sync CodeMirror when program.text changes (e.g. loading examples)
+    create_effect(move |_| {
+        let text = program.text.get();
+        // Skip update if textarea already has this value (to avoid loops)
+        if let Some(textarea) = textarea_ref.get() {
+            if textarea.value() == text {
+                return;
+            }
+        }
+
+        spawn_local(async move {
+            if let Some(window) = web_sys::window() {
+                if let Ok(simplicity_editor) =
+                    js_sys::Reflect::get(&window, &"SimplicityEditor".into())
+                {
+                    if let Ok(set_value_fn) =
+                        js_sys::Reflect::get(&simplicity_editor, &"setValue".into())
+                    {
+                        if let Some(set_value_fn) = set_value_fn.dyn_ref::<js_sys::Function>() {
+                            let _ = set_value_fn.call1(&simplicity_editor, &text.into());
+                        }
+                    }
+                }
+            }
+        });
+    });
+
     let insert_4_spaces = move || {
         let element = textarea_ref.get().expect("<textarea> should be mounted");
         if let Ok(Some(start)) = element.selection_start() {

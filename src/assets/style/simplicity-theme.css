@@ -1,0 +1,177 @@
+/*
+ * Simplicity Theme for CodeMirror
+ * Exact match for VS Code Dark+ theme with SimplicityHL token mappings
+ * 
+ * Token mapping from VS Code extension (simfony.tmLanguage.json):
+ * - storage.type.function → #569cd6 (blue) for "fn", "type", "let"
+ * - keyword.control → #c586c0 (purple) for "match", "if", "else", "while", "for", "return"
+ * - keyword.other → #c586c0 (purple) for "mod", "const"
+ * - keyword.operator → #d4d4d4 (white) for "->", "=>", "=", ":", etc.
+ * - entity.name.function → #dcdcaa (yellow) for function names and calls
+ * - entity.name.type → #4ec9b0 (cyan) for types
+ * - entity.name.namespace → #4ec9b0 (cyan) for "jet", "witness", "param"
+ * - constant.numeric → #b5cea8 (light green) for numbers
+ * - constant.language → #569cd6 (blue) for "true", "false", "None"
+ * - string.quoted → #ce9178 (orange) for strings
+ * - comment → #6a9955 (green) for comments
+ * - variable.other → #9cdcfe (light blue) for variables
+ * - support.function → #dcdcaa (yellow) for "Left", "Right", "Some"
+ */
+
+.cm-s-simplicity.CodeMirror { 
+    background: #1e1e1e;
+    color: #d4d4d4;
+}
+
+.cm-s-simplicity div.CodeMirror-selected { 
+    background: #264f78;
+}
+
+.cm-s-simplicity .CodeMirror-line::selection, 
+.cm-s-simplicity .CodeMirror-line > span::selection, 
+.cm-s-simplicity .CodeMirror-line > span > span::selection { 
+    background: rgba(38, 79, 120, 0.99);
+}
+
+.cm-s-simplicity .CodeMirror-line::-moz-selection, 
+.cm-s-simplicity .CodeMirror-line > span::-moz-selection, 
+.cm-s-simplicity .CodeMirror-line > span > span::-moz-selection { 
+    background: rgba(38, 79, 120, 0.99);
+}
+
+.cm-s-simplicity .CodeMirror-gutters { 
+    background: #1e1e1e;
+    border-right: 1px solid #3e3e42;
+}
+
+.cm-s-simplicity .CodeMirror-guttermarker { 
+    color: #d4d4d4;
+}
+
+.cm-s-simplicity .CodeMirror-guttermarker-subtle { 
+    color: #858585;
+}
+
+.cm-s-simplicity .CodeMirror-linenumber { 
+    color: #858585;
+}
+
+.cm-s-simplicity .CodeMirror-cursor { 
+    border-left: 1px solid #aeafad;
+}
+
+/* Comments - comment.line.double-slash.simfony, comment.block.simfony */
+.cm-s-simplicity span.cm-comment { 
+    color: #6a9955;
+    font-style: italic;
+}
+
+/* Boolean & None - constant.language.boolean.simfony, constant.language.simfony */
+.cm-s-simplicity span.cm-atom { 
+    color: #569cd6;
+}
+
+/* Numbers - constant.numeric.* */
+.cm-s-simplicity span.cm-number { 
+    color: #b5cea8;
+}
+
+/* Keywords - storage.type.function (fn, let, type), keyword.control (match, if, else, while, for, return), keyword.other (mod, const) */
+.cm-s-simplicity span.cm-keyword { 
+    color: #c586c0;
+}
+
+/* Function definitions - entity.name.function.simfony */
+.cm-s-simplicity span.cm-def { 
+    color: #dcdcaa;
+}
+
+/* Variables - variable.other.simfony */
+.cm-s-simplicity span.cm-variable { 
+    color: #9cdcfe;
+}
+
+/* Function calls - entity.name.function.call.simfony */
+.cm-s-simplicity span.cm-variable-2 { 
+    color: #dcdcaa;
+}
+
+/* Constants (UPPERCASE witness) */
+.cm-s-simplicity span.cm-variable-3 { 
+    color: #4fc1ff;
+}
+
+/* Built-in types, jets, witness, param namespace - entity.name.type.simfony, entity.name.namespace.simfony */
+.cm-s-simplicity span.cm-builtin { 
+    color: #4ec9b0;
+}
+
+/* Type names - entity.name.type.simfony */
+.cm-s-simplicity span.cm-type { 
+    color: #4ec9b0;
+}
+
+/* Strings - string.quoted.double.simfony */
+.cm-s-simplicity span.cm-string { 
+    color: #ce9178;
+}
+
+/* String special chars - constant.character.escape.simfony */
+.cm-s-simplicity span.cm-string-2 { 
+    color: #d16969;
+}
+
+/* Operators - keyword.operator.simfony */
+.cm-s-simplicity span.cm-operator { 
+    color: #d4d4d4;
+}
+
+/* Macros/Preprocessor - keyword.other.preprocessor.directive.simfony */
+.cm-s-simplicity span.cm-meta { 
+    color: #c586c0;
+}
+
+/* Errors */
+.cm-s-simplicity span.cm-error { 
+    background: #f48771;
+    color: #ffffff;
+}
+
+/* Attributes */
+.cm-s-simplicity span.cm-attribute { 
+    color: #9cdcfe;
+}
+
+/* Tags */
+.cm-s-simplicity span.cm-tag { 
+    color: #569cd6;
+}
+
+/* Links */
+.cm-s-simplicity span.cm-link { 
+    color: #569cd6;
+    text-decoration: underline;
+}
+
+/* Active line */
+.cm-s-simplicity .CodeMirror-activeline-background { 
+    background: #282828;
+}
+
+/* Matching bracket */
+.cm-s-simplicity .CodeMirror-matchingbracket {
+    background: #3e3e42;
+    color: #4ec9b0 !important;
+    outline: 1px solid #888;
+}
+
+/* Non-matching bracket */
+.cm-s-simplicity .CodeMirror-nonmatchingbracket {
+    color: #f48771;
+}
+
+/* Cursor line */
+.cm-s-simplicity .CodeMirror-activeline .CodeMirror-gutter-elt {
+    background: #282828;
+}
+

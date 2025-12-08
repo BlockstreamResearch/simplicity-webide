@@ -26,6 +26,16 @@
     }
 }
 
+// CodeMirror wrapper styles
+.CodeMirror {
+    height: auto;
+    min-height: 400px;
+    font-family: 'Roboto Mono', monospace;
+    font-size: 12px;
+    border-radius: 7.5px;
+    border: 1px solid rgba(255, 255, 255, 0.10);
+}
+
 .copy-program {
     position: absolute;
     top: 40px;

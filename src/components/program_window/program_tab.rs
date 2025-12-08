@@ -2,14 +2,15 @@ use std::sync::Arc;
 
 use itertools::Itertools;
 use leptos::{
-    component, create_node_ref, create_rw_signal, ev, event_target_value, html, spawn_local,
-    use_context, view, IntoView, RwSignal, Signal, SignalGetUntracked, SignalSet, SignalUpdate,
+    component, create_effect, create_node_ref, create_rw_signal, ev, event_target_value, html, spawn_local,
+    use_context, view, IntoView, RwSignal, Signal, SignalGet, SignalGetUntracked, SignalSet, SignalUpdate,
     SignalWith, SignalWithUntracked,
 };
 use simplicityhl::parse::ParseFromStr;
 use simplicityhl::simplicity::jet::elements::ElementsEnv;
 use simplicityhl::{elements, simplicity};
 use simplicityhl::{CompiledProgram, SatisfiedProgram, WitnessValues};
+use wasm_bindgen::prelude::*;
 
 use crate::components::copy_to_clipboard::CopyToClipboard;
 use crate::function::Runner;
@@ -166,47 +167,46 @@ impl Runtime {
 const TAB_KEY: u32 = 9;
 const ENTER_KEY: u32 = 13;
 
+// JavaScript bindings for CodeMirror
+#[wasm_bindgen]
+extern "C" {
+    #[wasm_bindgen(js_namespace = ["window", "SimplicityEditor"])]
+    fn init(textarea_id: &str, initial_value: &str) -> bool;
+
+    #[wasm_bindgen(js_namespace = ["window", "SimplicityEditor"])]
+    fn refresh();
+}
+
 #[component]
 pub fn ProgramTab() -> impl IntoView {
     let program = use_context::<Program>().expect("program should exist in context");
     let runtime = use_context::<Runtime>().expect("runtime should exist in context");
     let textarea_ref = create_node_ref::<html::Textarea>();
+    let editor_initialized = create_rw_signal(false);
 
     let update_program_text = move |event: ev::Event| {
         program.text.set(event_target_value(&event));
     };
-    let insert_4_spaces = move || {
-        let element = textarea_ref.get().expect("<textarea> should be mounted");
-        if let Ok(Some(start)) = element.selection_start() {
-            let start_ = start as usize; // safety: 32-bit machine of higher
-            program.text.update(|s| s.insert_str(start_, "    "));
-            let _result = element.set_selection_range(start + 4, start + 4);
-        }
-    };
-    let delete_4_spaces = move || {
-        let element = textarea_ref.get().expect("<textarea> should be mounted");
-        if let Ok(Some(start)) = element.selection_start() {
-            let start_ = start as usize; // safety: 32-bit machine of higher
-            if start < 4 || program.text.with(|s| &s[start_ - 4..start_] != "    ") {
-                return;
-            }
-            program
-                .text
-                .update(|s| s.replace_range(start_ - 4..start_, ""));
-            let _result = element.set_selection_range(start - 4, start - 4);
-        }
-    };
-    let handle_keydown = move |event: ev::KeyboardEvent| {
-        if event.ctrl_key() && event.key_code() == ENTER_KEY {
-            runtime.run();
-        } else if event.key_code() == TAB_KEY {
-            event.prevent_default();
-            match event.shift_key() {
-                false => insert_4_spaces(),
-                true => delete_4_spaces(),
+
+    // Initialize CodeMirror when the textarea is mounted
+    create_effect(move |_| {
+        if let Some(_textarea) = textarea_ref.get() {
+            if !editor_initialized.get() {
+                editor_initialized.set(true);
+                let initial_value = program.text.get_untracked();
+                spawn_local(async move {
+                    // Wait for DOM to be fully ready
+                    gloo_timers::future::TimeoutFuture::new(100).await;
+                    let success = init("program-input-field", &initial_value);
+                    if success {
+                        web_sys::console::log_1(&"CodeMirror initialized with syntax highlighting".into());
+                    } else {
+                        web_sys::console::error_1(&"Failed to initialize CodeMirror".into());
+                    }
+                });
             }
         }
-    };
+    });
 
     view! {
         <div class="tab-content">
@@ -216,6 +216,7 @@ pub fn ProgramTab() -> impl IntoView {
                 </CopyToClipboard>
             </div>
             <textarea
+                id="program-input-field"
                 class="program-input-field"
                 placeholder="Enter your program here"
                 rows="25"
@@ -223,7 +224,6 @@ pub fn ProgramTab() -> impl IntoView {
                 spellcheck="false"
                 prop:value=program.text
                 on:input=update_program_text
-                on:keydown=handle_keydown
                 node_ref=textarea_ref
                 name="program-input"
             >

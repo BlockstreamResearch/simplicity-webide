@@ -16,7 +16,7 @@ RUN apt-get update && \
     npm && \
     rm -rf /var/lib/apt/lists/*
 
-# Install Rust and the wasm32 target
+# Install Rust and wasm32 target
 ENV RUSTUP_HOME=/usr/local/rustup \
     CARGO_HOME=/usr/local/cargo \
     PATH=/usr/local/cargo/bin:$PATH
@@ -38,8 +38,8 @@ WORKDIR /app
 COPY . .
 
 # Build the application
-RUN trunk build --release && \
-    sh fix-links.sh
+RUN rustup target add wasm32-unknown-unknown
+RUN trunk build --release
 
 # Stage 2: Final Image
 # This stage creates a minimal image to serve the built static files.

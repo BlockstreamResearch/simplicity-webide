@@ -1,44 +1,125 @@
 @use "../helpers";
 
-.analysis {
-    margin-top: 40px;
-    padding: 30px;
-    background-color: helpers.$background-light;
-    border-radius: 7.5px;
+// Analyze Modal Styles
+.analyze-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.75);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    padding: 20px;
+    backdrop-filter: blur(4px);
+}
 
-    .analysis-header {
-        .analysis-title {
-            margin: 6px 0 14px 0;
-            font-size: 28px;
-            font-style: normal;
-            font-weight: 700;
-            line-height: 24px;
+.analyze-modal {
+    background-color: helpers.$background-dark;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    max-width: 800px;
+    width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+
+    scrollbar-color: helpers.$background-light #424242;
+    scrollbar-width: thin;
+    
+    &.analyze-modal-large {
+        max-width: 1200px;
+    }
+
+    .analyze-modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 20px 24px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        background-color: helpers.$background-light;
+
+        h2 {
+            margin: 0;
+            font-size: 20px;
+            font-weight: 600;
+            color: helpers.$text-white;
         }
 
-        @media only screen and (max-width: 800px) {
-            flex-direction: column;
-        }
+        .analyze-modal-close {
+            background: none;
+            border: none;
+            color: helpers.$text-grey;
+            font-size: 18px;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 4px;
+            transition: all 0.2s ease;
 
-        .program-status{
-            border: 1px dotted #7eff18;
-            color: #7eff18;
-            padding: 12px 20px;
-            font-size: 13px;
-            margin-bottom: 8px;
-            display: flex;
-            align-items: center;
-            
-            &.is_error{
-                border: 1px dotted #ff0000;
-                color: #ff0000;
-            }
-        
-            i {
-                font-size: 20px;
-                margin-right: 10px;
+            &:hover {
+                color: helpers.$text-white;
+                background-color: rgba(255, 255, 255, 0.1);
             }
         }
     }
+
+    .analyze-modal-content {
+        padding: 24px;
+
+        // Override nested analysis styles when inside modal
+        .analysis {
+            margin-top: 0;
+            padding: 0;
+            background-color: transparent;
+            border-radius: 0;
+
+            .analysis-header {
+                .analysis-title {
+                    display: none; // Hide duplicate title
+                }
+            }
+        }
+    }
+
+    // Empty state when no run result
+    .analyze-empty-state {
+        text-align: center;
+        padding: 40px 20px;
+        color: helpers.$text-grey;
+
+        i {
+            font-size: 48px;
+            margin-bottom: 16px;
+            opacity: 0.5;
+        }
+
+        p {
+            font-size: 16px;
+            margin: 0;
+        }
+    }
+}
+
+@media only screen and (max-width: 600px) {
+    .analyze-modal {
+        max-height: 80vh;
+        margin: 10px;
+
+        .analyze-modal-header {
+            padding: 16px;
+        }
+
+        .analyze-modal-content {
+            padding: 16px;
+        }
+    }
+}
+
+.analysis {
+    // Match string-box alignment (margin-top: 10px, padding: 10px)
+    margin-top: 10px;
 
     .analysis-body {
         display: flex;
@@ -54,81 +135,295 @@
             flex: 0 0 50%;
             
             border: 1px solid rgba(255, 255, 255, 0.10);
-            padding: 20px;
+            padding: 10px 10px;
             background-color: helpers.$background-dark;
 
             .analysis-item-label {
                 font-family: 't26-carbon', 'sans-serif';
                 color: helpers.$text-white;
-                font-size: 20px;
+                font-size: 14px;
                 font-style: normal;
-                font-weight: 700;
+                font-weight: 600;
                 line-height: normal;
             }
             .analysis-item-data {
                 color: helpers.$text-grey;
-                font-size: 16px;
+                font-size: 14px;
                 font-style: normal;
                 font-weight: 400;
                 line-height: normal;
             }
         }
     }
+}
 
-    .program-status-error-message{
-        border: 1px dotted #ff0000;
-        color: #ff0000;
-        word-break: break-word;
-        margin-top: 10px;
-        padding: 10px;
-        overflow-x: scroll;
+// Analyze Panel Styles
+.analyze-panel {
+    padding: 0;
+}
 
-        scrollbar-color: helpers.$background-dark #b00000;
-        scrollbar-width: thin;
+// Analyze View (in ProgramWindow tab-content)
+.analyze-view {
+    padding: 10px;
+    height: 100%;
+    overflow-y: auto;
+    
+    scrollbar-color: helpers.$background-light #424242;
+    scrollbar-width: thin;
+}
+
+// DAG Section Styles
+.dag-section {
+    margin-top: 20px;
+    
+    .dag-section-title {
+        font-family: 't26-carbon', 'sans-serif';
+        font-size: 16px;
+        font-weight: 600;
+        color: helpers.$text-white;
+        margin: 0 0 12px 0;
+    }
+}
+
+.dag-layout {
+    display: flex;
+    gap: 16px;
+    height: 450px;
+    
+    @media only screen and (max-width: 900px) {
+        flex-direction: column;
+        height: auto;
+    }
+}
+
+.dag-canvas-container {
+    flex: 1;
+    position: relative;
+    min-width: 0;
+    
+    @media only screen and (max-width: 900px) {
+        height: 350px;
+    }
+}
+
+.dag-canvas {
+    width: 100%;
+    height: 100%;
+    background-color: helpers.$background-dark;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    overflow: hidden;
+
+    svg {
+        width: 100%;
+        height: 100%;
     }
 
-    .graph-error{
-        border: 1px dotted #ff0000;
-        color: #ff0000;
-        padding: 10px;
+    .dag-edge {
+        fill: none;
+        stroke: #4090ff;
+        stroke-width: 2;
+        opacity: 0.6;
     }
 
-    .graph-toggle-holder{
+    .dag-node-rect {
+        transition: all 0.15s ease;
+
+        &:hover {
+            filter: brightness(1.2);
+        }
+
+        &.selected {
+            stroke: #fff !important;
+            stroke-width: 3;
+            filter: brightness(1.3);
+        }
+    }
+
+    .dag-node-label {
+        fill: #fff;
+        font-size: 11px;
+        font-weight: 500;
+        pointer-events: none;
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+    }
+
+    .dag-empty, .dag-error {
         display: flex;
         align-items: center;
+        justify-content: center;
+        height: 100%;
+        color: helpers.$text-grey;
+        font-size: 14px;
+        padding: 20px;
+        text-align: center;
+    }
+
+    .dag-error {
+        color: #ef4444;
+    }
+}
+
+.dag-controls {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.dag-control-btn {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: helpers.$background-light;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 6px;
+    color: helpers.$text-grey;
+    cursor: pointer;
+    transition: all 0.15s ease;
+
+    &:hover {
+        background: #FF9517;
+        color: #fff;
+        border-color: #FF9517;
+    }
+
+    i {
+        font-size: 12px;
+    }
+}
+
+// DAG Details Panel
+.dag-details {
+    width: 320px;
+    background-color: helpers.$background-dark;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    overflow: hidden;
+    
+    @media only screen and (max-width: 900px) {
         width: 100%;
-        margin-left: 14px;
+        height: 200px;
+    }
+}
 
-        #graph-toggle-icon{
-            margin-left: 14px;
-            
-            rect{
-                stroke: #b5bdc2;
-                transition: .3s;
-            }
-            circle{
-                fill: #b5bdc2;
-                transition: .3s;
-            }
+.dag-details-content {
+    padding: 16px;
+    height: 100%;
+    overflow-y: auto;
+    
+    scrollbar-color: helpers.$background-light #424242;
+    scrollbar-width: thin;
+}
 
-            &:hover{
-                rect{
-                    stroke: white;
-                }
-                circle{
-                    fill: white;
-                }
-            }
+.dag-detail-item {
+    margin-bottom: 12px;
+    
+    &:last-child {
+        margin-bottom: 0;
+    }
+}
 
-            &.toggle-on{
-                rect{
-                    stroke: #9595FC;
-                }
-                circle{
-                    fill: #9595FC;
-                    transform:translateX(22px);
-                }
-            }
-        }
+.dag-detail-label {
+    display: block;
+    font-size: 11px;
+    font-weight: 600;
+    color: helpers.$text-grey;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 4px;
+}
+
+.dag-detail-value {
+    display: block;
+    font-size: 14px;
+    color: helpers.$text-white;
+    word-break: break-all;
+    
+    &.dag-kind {
+        display: inline-block;
+        padding: 3px 8px;
+        border-radius: 4px;
+        font-weight: 600;
+        font-size: 12px;
+        
+        &[data-kind-class="jet"] { background: rgba(255, 149, 23, 0.2); color: #ff9517; }
+        &[data-kind-class="leaf"] { background: rgba(74, 222, 128, 0.2); color: #4ade80; }
+        &[data-kind-class="plumbing"] { background: rgba(107, 114, 128, 0.2); color: #9ca3af; }
+        &[data-kind-class="sum"] { background: rgba(139, 92, 246, 0.2); color: #8b5cf6; }
+        &[data-kind-class="product"] { background: rgba(59, 130, 246, 0.2); color: #3b82f6; }
+        &[data-kind-class="assertion"] { background: rgba(239, 68, 68, 0.2); color: #ef4444; }
+        &[data-kind-class="advanced"] { background: rgba(245, 158, 11, 0.2); color: #f59e0b; }
+    }
+    
+    &.dag-type {
+        font-family: 'Roboto Mono', monospace;
+        font-size: 12px;
+        color: #8b5cf6;
+    }
+    
+    &.dag-cmr, &.dag-extra {
+        font-family: 'Roboto Mono', monospace;
+        font-size: 11px;
+        background: rgba(255, 255, 255, 0.05);
+        padding: 6px 8px;
+        border-radius: 4px;
+        color: helpers.$text-grey;
+    }
+}
+
+.dag-detail-cmr {
+    .dag-detail-value {
+        display: block;
+    }
+}
+
+.dag-details-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    padding: 24px;
+    text-align: center;
+    color: helpers.$text-grey;
+    
+    i {
+        font-size: 32px;
+        margin-bottom: 12px;
+        opacity: 0.4;
+    }
+    
+    p {
+        font-size: 14px;
+        margin: 0;
+    }
+}
+
+.dag-empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 20px;
+    text-align: center;
+    color: helpers.$text-grey;
+    background-color: helpers.$background-dark;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    
+    i {
+        font-size: 48px;
+        margin-bottom: 16px;
+        opacity: 0.4;
+    }
+    
+    p {
+        font-size: 16px;
+        margin: 0;
     }
 }

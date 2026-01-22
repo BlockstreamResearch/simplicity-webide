@@ -59,6 +59,11 @@
         &:active{
             background: #2E3135;
         }
+        &.button-active {
+            color: #FF9517;
+            background: #2E3135;
+            border-color: #FF9517;
+        }
     }
 
     @keyframes run-button-success {

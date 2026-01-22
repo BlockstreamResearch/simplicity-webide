@@ -1,3 +1,5 @@
+pub mod dag;
+
 use elements::hashes::{sha256, Hash};
 use elements::secp256k1_zkp as secp256k1;
 use secp256k1::rand::{self, Rng, SeedableRng};
@@ -178,3 +180,4 @@ pub fn control_block(cmr: simplicity::Cmr) -> elements::taproot::ControlBlock {
     info.control_block(&script_ver)
         .expect("control block should exist")
 }
+

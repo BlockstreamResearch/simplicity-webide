@@ -12,6 +12,16 @@ use crate::util::{HashedData, SigningKeys};
 #[derive(Copy, Clone, Debug, Default)]
 pub struct ActiveRunTab(pub RwSignal<&'static str>);
 
+/// Controls which view is shown in ProgramWindow: "Run" (code editor) or "Analyze" (DAG view)
+#[derive(Copy, Clone, Debug)]
+pub struct ActiveProgramView(pub RwSignal<&'static str>);
+
+impl Default for ActiveProgramView {
+    fn default() -> Self {
+        Self(RwSignal::new("Run"))
+    }
+}
+
 #[component]
 pub fn App() -> impl IntoView {
     let program = Program::load_from_storage().unwrap_or_default();
@@ -26,6 +36,7 @@ pub fn App() -> impl IntoView {
     provide_context(HashCount::load_from_storage().unwrap_or_default());
     provide_context(Runtime::new(program, tx_env.lazy_env));
     provide_context(ActiveRunTab::default());
+    provide_context(ActiveProgramView::default());
 
     if program.is_empty() {
         select_example(examples::get("✍️️ P2PK").expect("P2PK example should exist"));

@@ -13,7 +13,7 @@ pub fn RunButton() -> impl IntoView {
     let run_program = move |_event: ev::MouseEvent| {
         // Switch back to code editor view
         active_view.0.set("Run");
-        
+
         program.add_default_modules();
         update_local_storage();
         runtime.run();

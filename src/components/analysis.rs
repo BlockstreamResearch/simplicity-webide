@@ -6,9 +6,7 @@ use crate::util;
 use crate::util::Expression;
 
 #[component]
-pub fn Analysis(
-    program: Signal<Option<Arc<Expression>>>,
-) -> impl IntoView {
+pub fn Analysis(program: Signal<Option<Arc<Expression>>>) -> impl IntoView {
     view! {
         {
             move || match program.get() {
@@ -68,4 +66,3 @@ fn AnalysisInner(expression: Arc<Expression>) -> impl IntoView {
         </div>
     }
 }
-

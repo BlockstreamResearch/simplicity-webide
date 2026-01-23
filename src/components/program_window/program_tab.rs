@@ -155,7 +155,8 @@ impl Runtime {
             }
         };
         // Store the program expression for analysis
-        self.program_expr.set(Some(satisfied_program.redeem().clone()));
+        self.program_expr
+            .set(Some(satisfied_program.redeem().clone()));
 
         let mut runner = Runner::for_program(&satisfied_program);
         let success = self.env.with(|env| match runner.run(env) {

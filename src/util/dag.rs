@@ -39,11 +39,11 @@ pub struct DagExport {
     pub edges: Vec<Edge>,
 }
 
-/// Build a DAG export from an Expression (RedeemNode).
+/// Build a DAG export from an `Expression` (`RedeemNode`).
 pub fn build_dag_export(expr: &Arc<Expression>) -> DagExport {
     let mut builder = DagBuilder::new();
     let root_id = builder.visit(expr);
-    
+
     DagExport {
         root_id,
         nodes: builder.nodes,
@@ -90,7 +90,7 @@ impl DagBuilder {
         let id_str = format!("n{}", id);
 
         // Get children and classify node
-        let (kind, kind_class, desc, extra, children) = self.classify_node(node);
+        let (kind, kind_class, desc, extra, children) = Self::classify_node(node);
 
         // Process children and collect their IDs
         let child_ids: Vec<String> = children.iter().map(|c| self.visit(c)).collect();
@@ -125,8 +125,10 @@ impl DagBuilder {
         id_str
     }
 
-    /// Classify a node and return (kind, kind_class, desc, extra, children).
-    fn classify_node(&self, node: &Arc<Expression>) -> (String, String, String, Option<String>, Vec<Arc<Expression>>) {
+    /// Classify a node and return (kind, `kind_class`, desc, extra, children).
+    fn classify_node(
+        node: &Arc<Expression>,
+    ) -> (String, String, String, Option<String>, Vec<Arc<Expression>>) {
         match node.inner() {
             Inner::Iden => (
                 "iden".into(),
@@ -193,7 +195,11 @@ impl DagBuilder {
             ),
             Inner::AssertL(child, hidden_cmr) => {
                 let cmr_hex = hidden_cmr.as_ref().as_hex().to_string();
-                let short_cmr = if cmr_hex.len() > 8 { &cmr_hex[..8] } else { &cmr_hex };
+                let short_cmr = if cmr_hex.len() > 8 {
+                    &cmr_hex[..8]
+                } else {
+                    &cmr_hex
+                };
                 (
                     format!("assertl:{}", short_cmr),
                     "combinator".into(),
@@ -204,7 +210,11 @@ impl DagBuilder {
             }
             Inner::AssertR(hidden_cmr, child) => {
                 let cmr_hex = hidden_cmr.as_ref().as_hex().to_string();
-                let short_cmr = if cmr_hex.len() > 8 { &cmr_hex[..8] } else { &cmr_hex };
+                let short_cmr = if cmr_hex.len() > 8 {
+                    &cmr_hex[..8]
+                } else {
+                    &cmr_hex
+                };
                 (
                     format!("assertr:{}", short_cmr),
                     "combinator".into(),
@@ -232,7 +242,11 @@ impl DagBuilder {
             }
             Inner::Fail(entropy) => {
                 let entropy_hex = entropy.as_ref().as_hex().to_string();
-                let short = if entropy_hex.len() > 8 { &entropy_hex[..8] } else { &entropy_hex };
+                let short = if entropy_hex.len() > 8 {
+                    &entropy_hex[..8]
+                } else {
+                    &entropy_hex
+                };
                 (
                     format!("fail:{}", short),
                     "leaf".into(),

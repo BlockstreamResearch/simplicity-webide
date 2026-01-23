@@ -167,4 +167,3 @@ fn DagDetails(node: Option<NodeMeta>) -> impl IntoView {
         </div>
     }
 }
-

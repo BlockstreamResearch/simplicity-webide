@@ -12,7 +12,7 @@ use crate::util::{HashedData, SigningKeys};
 #[derive(Copy, Clone, Debug, Default)]
 pub struct ActiveRunTab(pub RwSignal<&'static str>);
 
-/// Controls which view is shown in ProgramWindow: "Run" (code editor) or "Analyze" (DAG view)
+/// Controls which view is shown in `ProgramWindow`: "Run" (code editor) or "Analyze" (DAG view)
 #[derive(Copy, Clone, Debug)]
 pub struct ActiveProgramView(pub RwSignal<&'static str>);
 

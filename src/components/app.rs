@@ -7,6 +7,7 @@ use crate::components::run_window::{HashCount, KeyCount, RunWindow, SignedData, 
 use crate::components::state::LocalStorage;
 use crate::examples;
 use crate::transaction::TxParams;
+use crate::url_sharing;
 use crate::util::{HashedData, SigningKeys};
 
 #[derive(Copy, Clone, Debug, Default)]
@@ -24,7 +25,11 @@ impl Default for ActiveProgramView {
 
 #[component]
 pub fn App() -> impl IntoView {
-    let program = Program::load_from_storage().unwrap_or_default();
+    let program = match url_sharing::read_shared_program() {
+        Some(Ok(shared_text)) => Program::new(shared_text),
+        Some(Err(())) => Program::new("// The shared link could not be decoded.\n".to_string()),
+        None => Program::load_from_storage().unwrap_or_default(),
+    };
     provide_context(program);
     let tx_params = TxParams::load_from_storage().unwrap_or_default();
     let tx_env = TxEnv::new(program, tx_params);

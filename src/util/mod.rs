@@ -1,3 +1,5 @@
+pub mod dag;
+
 use elements::hashes::{sha256, Hash};
 use elements::secp256k1_zkp as secp256k1;
 use secp256k1::rand::{self, Rng, SeedableRng};

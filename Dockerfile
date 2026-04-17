@@ -38,6 +38,8 @@ WORKDIR /app
 COPY . .
 
 # Build the application
+# Note: fix-links.sh rewrites asset paths for GitHub Pages (/simplicity-webide/ subdirectory).
+# For local Docker development, comment out "sh fix-links.sh" below.
 RUN trunk build --release && \
     sh fix-links.sh
 

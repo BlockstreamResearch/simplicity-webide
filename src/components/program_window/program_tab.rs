@@ -3,8 +3,8 @@ use std::sync::Arc;
 use itertools::Itertools;
 use leptos::{
     component, create_node_ref, create_rw_signal, ev, event_target_value, html, spawn_local,
-    use_context, view, IntoView, RwSignal, Signal, SignalGetUntracked, SignalSet, SignalUpdate,
-    SignalWith, SignalWithUntracked,
+    use_context, view, IntoView, ReadSignal, RwSignal, Signal, SignalGetUntracked, SignalSet,
+    SignalUpdate, SignalWith, SignalWithUntracked,
 };
 use simplicityhl::parse::ParseFromStr;
 use simplicityhl::simplicity::jet::elements::ElementsEnv;
@@ -13,6 +13,7 @@ use simplicityhl::{CompiledProgram, SatisfiedProgram, WitnessValues};
 
 use crate::components::copy_to_clipboard::CopyToClipboard;
 use crate::function::Runner;
+use crate::util::Expression;
 
 #[derive(Copy, Clone, Debug)]
 pub struct Program {
@@ -108,6 +109,7 @@ pub struct Runtime {
     pub run_succeeded: RwSignal<Option<bool>>,
     pub debug_output: RwSignal<String>,
     pub error_output: RwSignal<String>,
+    program_expr: RwSignal<Option<Arc<Expression>>>,
 }
 
 impl Runtime {
@@ -118,7 +120,12 @@ impl Runtime {
             run_succeeded: RwSignal::default(),
             debug_output: RwSignal::default(),
             error_output: RwSignal::default(),
+            program_expr: RwSignal::default(),
         }
+    }
+
+    pub fn program_expr(&self) -> ReadSignal<Option<Arc<Expression>>> {
+        self.program_expr.read_only()
     }
 
     fn set_success(self, success: bool) {
@@ -142,10 +149,15 @@ impl Runtime {
             Ok(x) => x,
             Err(error) => {
                 self.error_output.set(error);
+                self.program_expr.set(None);
                 self.set_success(false);
                 return;
             }
         };
+        // Store the program expression for analysis
+        self.program_expr
+            .set(Some(satisfied_program.redeem().clone()));
+
         let mut runner = Runner::for_program(&satisfied_program);
         let success = self.env.with(|env| match runner.run(env) {
             Ok(..) => {

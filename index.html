@@ -15,18 +15,22 @@
     <link rel="icon" href="/favicon-7cd5c27a9eb50126.png" integrity="sha384-wToBUL03KwXG4Uk5IRprZrvuwfQEv+FWXM4WbH5VI/+vMKMS+p49t0rmo4ABMx+l"/>
     <title>Simplicity IDE</title>
 
-    <link rel="stylesheet" href="/style-ded83ff43f2a2afa.css" integrity="sha384-mPTXfIKeVro5JzFrbQqZOIMDGjkCXDEzpM25W+uhRPT9OSKhdTDMc7qLfWFGc5Fk"/>
+    <link rel="stylesheet" href="/style-6ba7a0aba0d80b1b.css" integrity="sha384-AtKmo2mhmsOWrJLE2MURihfViaA388CgsFk0Fg9xKGprhSEP4KqzbX7hW/DwR2c3"/>
     
     
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
 
+    <!-- D3.js for DAG visualization -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+    <script src="/dag_viewer-77263d5e5e30c8c0.js" integrity="sha384-VwhMMHEZNQIjrOdVfgAjkovVOGg+43zsiL3TFA+m6UDz89wW3J5c8DmNT8S9gUyQ"></script>
+
     <noscript>This page requires JavaScript</noscript>
-  <link rel="modulepreload" href="/simplicity-webide-809b5f5e303d1607.js" crossorigin="anonymous" integrity="sha384-05lWjr//Wc4OqLFn0TD5O9p+Gic2jjxlRRwSqYKXPjo9xFWsXvsBbjfEQD5dul0X"><link rel="preload" href="/simplicity-webide-809b5f5e303d1607_bg.wasm" crossorigin="anonymous" integrity="sha384-oJ2uYAYgdrKmuGk1A8wSZkOi1oKdadiOBJsiBmkv5WsZgC8dHq5u7Qk1VqCL3RYB" as="fetch" type="application/wasm"></head>
+  <link rel="modulepreload" href="/simplicity-webide-28fc6ed1234c878e.js" crossorigin="anonymous" integrity="sha384-t+MXQC8ml580qWyiRjMxiDys/slHmdshxfi/BHkoJgBxLW00o+/n7HvnissWguCp"><link rel="preload" href="/simplicity-webide-28fc6ed1234c878e_bg.wasm" crossorigin="anonymous" integrity="sha384-Dgw8kg+E28y6W8hf+ZaVIxaZOUtmKNxL027gB7oMvzvgyE2mh3NfhkBX7KamcCLv" as="fetch" type="application/wasm"></head>
   <body>
 <script type="module">
-import init, * as bindings from '/simplicity-webide-809b5f5e303d1607.js';
-const wasm = await init({ module_or_path: '/simplicity-webide-809b5f5e303d1607_bg.wasm' });
+import init, * as bindings from '/simplicity-webide-28fc6ed1234c878e.js';
+const wasm = await init({ module_or_path: '/simplicity-webide-28fc6ed1234c878e_bg.wasm' });
 
 
 window.wasmBindings = bindings;

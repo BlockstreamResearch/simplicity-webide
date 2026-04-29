@@ -3,6 +3,7 @@ mod examples;
 mod function;
 mod jet;
 mod transaction;
+mod url_sharing;
 mod util;
 
 use components::App;
